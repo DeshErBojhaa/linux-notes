@@ -7,6 +7,8 @@ The term kernel is ofter used as a synonym for the second meaning. It is possibl
 
 #### Tasks performed by the Kernel
 - **Process Scheduling**: Linux is a *preemptive multitasking* operating system.
+**Important Note: A process is a running program that is assigned resources. i.e. CPU, memory and file system**
+
 - **Memory Management**: Linux employs virtual memory management.
   - Process are isolated from one another and from the kernel.
   - Only part of a process need to kept in memory.
@@ -17,3 +19,10 @@ The term kernel is ofter used as a synonym for the second meaning. It is possibl
 - **Provision of a system call application programming interface (API)**: Process can request the kernel to perform various tasks using kernel entry points known as *system calls*.
 
 #### Kernel mode and user mode
+Modern CPUs have two modes. Kernel mode is also known as supervisor mode. Areas of virtual memory can be marked as kernel mode or user mode. When running on user mode, CPU can only access memory that is marked as user mode.
+Certain operations can only be performed as kernel mode. Such as `halt`. 
+
+## The Shell
+A shell is a special-purposed program designed to read commands typed by a user and execute appropriate programs in response to those commands.
+On UNIX system, the shell is a user process. Many different shell exists,
+- 
