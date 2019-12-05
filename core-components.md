@@ -155,4 +155,28 @@ A new process is create with `fork()` it inherits copies of its parent's resourc
 **Will write later**
 
 ## Interprocess Communication and Synchronization
+Most naive one is reading and wirting from a shared file. But it is slow for most *IPCs* (Inter Process Communication). Linux provides,
+- *signals*, which are used to indicte that an event occurred
+- *pipes* and *FIFOS* (came from system V branch of UNIX) which can used to transfer data between processes.
+- *sockets* (came from BSD branch of UNIX)
+- *file locking*, which allowes a process to lock a region of a file in order to prevent other processed from reading or updating the file content.
+- *message queues*
+- *semaphores*, which are used to synchronize the actions of process
+- *shared memory*
 
+## Signals
+Often described as "software interrupts". Each signal type is identified by a different integer, defined with symbolic names of the form `SIGxxxx`. Signals are sent by kernel directly or by other process via kernel.
+A kernel may send a signal to a process when one of the following occurres,
+- *interrupt character* pressed (Control-C).
+- one of the process's children has terminated.
+- a timer set by the peocess has expired
+- the process tries to access invalid memory address.
+
+When a process receives a signal, it takes one of the following actions,
+- ignores the signal.
+- process is killed by the signal.
+- it is suspended until later being resumed by receipt of a special-purpose signal.
+
+In the interval between the time it is generated and the time it is delivered, a signal is said to be *pending* for a process. Normally, a pending signal is delivered as soon as the receiving process is next scheduled to run, or immediately if the pro- cess is already running. However, it is also possible to *block* a signal by adding it to the process’s signal *mask*. If a signal is generated while it is blocked, it remains pending until it is later unblocked 
+
+## Threads
