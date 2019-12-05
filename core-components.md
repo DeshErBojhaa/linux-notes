@@ -73,3 +73,86 @@ For the purpose of accessing a file, the system divides users into three catego-
 These permissions may also be set on directories, although their meanings are slightly different: read permission allows the contents of (i.e., the filenames in) the directory to be listed; write permission allows the contents of the directory to be changed (i.e., filenames can be added, removed, and changed); **and execute (some- times called search)** permission allows access to files within the directory (subject to the permissions on the files themselves).
 
 ## File I/O Model
+Same system callls (*open(), read(), write(), close() and so on*) are used to perform I/O on all types of files, including devices.
+The kernel essentially provides one file type: a sequential stream of bytes, which in the case of disk files, disks, and tape devices can be randomly accessed and using the *lseek()* system call.
+UNIX systems have no *end-of-file* character; the end of file is detected by a read that returns no data.
+
+### File Descriptors
+The I/O system calls refer to open files using a *file descriptor* a non negative integer. Normally a process inherits three open file descriptors when started by shell.
+1. `0` is *standard input*
+2. `1` is *standard output*
+3. `2` is *standard error*: The file to which the process writes error messages and notification of exceptional or abnormal conditions.
+
+## Programs
+Programs normally exists in 2 forms 
+1. Source code that human can understand. 
+2. binary machine language instructions that computer can understand.
+
+### Filters
+A program that reads data from `stdin`, performs some operations on that and writes it to `stdout`. Ex: `cat, grep, tr, sort, wc sed` and `awk`.
+
+### Command-line arguments
+Provide to the program as string, first argument is the name of the program.
+
+## Processes
+Put most simply, a process os an instance of an executing program. When a program is executed, the kernel loads the code of the program in the virtual memory, allocates space for program variables, and set up kernel bookkeeping data structures to record various informations such as PID, termination status, UID and GID about the process.
+
+From a kernel's point of view, process are entities among which the kernel must share the various resources of the computer. When the process terminates, all such resources are released for reuse by other process.
+
+### Process momory layout
+A process is logically divided into the following parts, known as segments:
+- *Text*: the instructions of the program
+- *Data*: the static variables used by the program
+- *Heap*: an area from which programs can dynamically allocate extra memory.
+- *Stack*: a piece of memory that grows and shrinks.
+
+### Process creation and program execution
+A process can create a new process using the `fork()` system call. The process that call `fork()`. The kernel creates the chile process by making a duplicate of the parent process. The child process inherites copies of parent's data, stack and heap segments, which it may modify independently.
+The child process can either,
+- go on to execute a different set of functions in the same source code as the parent.
+- or, call the `exec()` system call to load and execute an entirely new program. 
+
+An `exec()` call destroyes the existing text, data, stack and heap segments, replacing them with new segments based on the code of new program.
+
+### Process termination and termination status
+Process can terminate in 2 ways.
+- It can kill itself by calling `_exit()` systemcall.
+- By delivery of a signal.
+
+In either case, the process yields a *termination status*. Status 0 means the process succeeded. Parent process can examin it's child process's termination status by calling `wait()` syscall.
+
+### Process users and group identifiers
+Each process has a number of associated UID and GID. Including
+- *Real UID and real GID*: A new process inherits these from it's parent process. A login shell gets its real UID and GID from the corresponding fields in the system password file.
+- *Effective UID and effective GID*: These two IDs are used in determining the permissions that the process has when accessing protected resources such as files and interprocess communication objects. Typically, the process’s effective IDs have the same values as the corresponding real IDs. Changing the effective IDs is a mechanism that allows a process to assume the privileges of another user or group, as described in privileged process section.
+- *Supplementary GID*: These ids identifies additional groups to which a process belongs. A new process inherits these ids from it's parents. A login shell gets it's supplementary GIDs from the group file.
+
+### Privileged processes
+A process may be privilaged because it was created by another previleged process. For example by a login shell started by root. Another way a process becomes privilaged is via the *set-user-ID* mechanism.
+
+### Capabilities
+Privilages of a super user is divided into a set of distinct units called capabilities. Capability names usually starts with the prefix `CAP_` as in `CAP_KILL`.
+
+### The init process
+When booting the system the kernel creates a special process callled *init* the "parent of all processes". Which is derived from the program file `/sbin/init`. **The init process always has process id `1`** and runs with supervised privilages. The init process can not be killed even by the super user. It trminates only when the system shutdowns.
+
+### The deamon process
+- It is long lived. A deamon process is often started at system booot and remains in existance until the system is shut down.
+- It runs in background, and has not controlling terminal from which it can read input or to which it can write ourput.
+
+### Environment list
+Each process has an *environment list*, which is a set of *environment variables* which is a name, value pair that are maintained within the user-space memory of the process. When a new process is created via `fork()` it inherits it's copy of env variables from it's parent process. Thus it is a way for parent process to communicate with the child process. When a child process replaces the running program using `exec()` the new program inherits the environment from the parent program or receives a new environment specified as part of the `exec()` call.
+Environment variables are created using `export` command in most shells.
+
+### Resource limits
+Using the `setrlimit()` system call, a process can establish upper limit on it's consumption of various resources such as open file, memory and CPU. Each such resource limit has 2 associated values,
+- soft limit : which limits the ammoutn of the resources the process may consume. An unprivilaged process may change its soft limit for a particular resource to any value in the range from zero upto the corresponding hard limit. And can only lower it's hard limit.
+- hard limit : which is a ceiling on the value to which the soft limit may be adjusted.
+
+A new process is create with `fork()` it inherits copies of its parent's resources limit settings.
+
+## Static and Shared Libraries
+**Will write later**
+
+## Interprocess Communication and Synchronization
+
