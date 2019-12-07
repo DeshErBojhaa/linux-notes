@@ -46,5 +46,3 @@ The kernel stack is a per-process memory region maintained in kernel memory that
 Stack frame contains the following informations:
 - *Function arguments and local variables*: In C those are called automatic variables.
 - *Call linkage information*: Each function used certain CPU registers, such as the program counter, which points to the next machine-language instruction to be executed. Each time a function calls another, a copy of the values of these registers are saved in the called function's stack, so that when it returns the register values can be restored for the calling function.
-
-## Environment List
