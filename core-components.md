@@ -5,12 +5,13 @@ The term operating system commonly used with two different meanings:
 
 The term kernel is ofter used as a synonym for the second meaning. It is possible to run programmes without the Kernel, but havind it greatly simplifies the writing and use of programs. The kernel does it by providing a software layer to manage the limited resources of a computer.
 
-#### Tasks performed by the Kernel
-- **Process Scheduling**: Linux is a *preemptive multitasking* operating system.
+### Tasks performed by the Kernel
+- **Process Scheduling**: Linux is a *preemptive multitasking* operating system. The kernel is resoinsible for determining which processes are allowed to use the CPU.
 **Important Note: A process is a running program that is assigned resources. i.e. CPU, memory and file system**
+**Important Note:** The act of one process giving up control of CPU to another process is called a *context switch.*
 
-- **Memory Management**: Linux employs virtual memory management.
-  - Process are isolated from one another and from the kernel.
+- **Memory Management**: Memory management is a complicated task. But modern CPUs inclide a *memory management unit (MMU)* that enables a memory access scheme called *virtual memory*. When the process accesses some of its memory, the MMU intercepts the access and uses a memory address map to translate the memory location from the process into an actual physical memory location on the machine. **The implementation if a memory address map is called a page table** Linux employs virtual memory management.
+  - Process are isolated from one another and from the kernel. However, process can share memory.
   - Only part of a process need to kept in memory.
 - Provision of a file system.
 - Creation and termination of processes.
@@ -18,7 +19,7 @@ The term kernel is ofter used as a synonym for the second meaning. It is possibl
 - **Networking**: The kernel transmit and receive network messages(packets) on behalf of user process. This task includes routing of network packets to the target system.
 - **Provision of a system call application programming interface (API)**: Process can request the kernel to perform various tasks using kernel entry points known as *system calls*.
 
-#### Kernel mode and user mode
+### Kernel mode and user mode
 Modern CPUs have two modes. Kernel mode is also known as supervisor mode. Areas of virtual memory can be marked as kernel mode or user mode. When running on user mode, CPU can only access memory that is marked as user mode.
 Certain operations can only be performed as kernel mode. Such as `halt`. 
 
@@ -31,7 +32,8 @@ On UNIX system, the shell is a user process. Many different shell exists,
 - **Bourne Again shell (bash)**: GNU's reimplementation of Bourne shell. 
 
 ## Users and Groups
-Each user in the system is uniquely identified and users may belong to groups.
+In UNIX nominclature, a user is an entity that can run process and own files.
+Users exists primarily to support permissions and boundaries. Each user in the system is uniquely identified and users may belong to groups.
 ### Users
 Every user in the system has an unique user name and numeric id (UID). For each user, there are defined by a line in the system password file `/etc/passwd` which includes the following additional information
 - Group ID

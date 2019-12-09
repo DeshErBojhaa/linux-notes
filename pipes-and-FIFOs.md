@@ -1,6 +1,12 @@
 ## Overview
-### A pipe is a byte of stream
-There is no concept of message or message boundaries when using a pipe. The  process reading from a pipe can read blocks of data of any size, regardless of the size of the block. Data in pipes are synchronized. It's not possible to randomly access the data in pipe using `lseek()`.
+Intendent pipe behaviour is to minic a **unidirectional** stream of bytes.
+For pipes and FIFOs, boundaries between multiple message are not preserved. This means that when multiple message are being delivered to a single process, then the server and receiver must agree on some convention for seperating the messages. Various approachers are:
+- Terminaring each message with a *delimiter character* (such as newline)
+- Include a fixed sized header with a length field.
+- Use fixed length meaasges.
+
+### A pipe is a stream of byte
+There is no concept of message or message boundaries when using a pipe. The  process reading from a pipe can read blocks of data of any size, regardless of the size of the block. Data in pipes are synchronized. It's **not possible** to randomly access the data in pipe using `lseek()`.
 
 ### Reading from a pipe
 Reading on a empty pipe is blocking. Reading on a closed pipe will see and *end-of-file*. i.e. `read()` returns 0 once it has read all remainging data in the pipe.
@@ -31,3 +37,5 @@ The writing process closes its read descriptor for the pipe for a different reas
 If the writing process doesn’t close the read end of the pipe, then, even after the other process closes the read end of the pipe, the writing process will still be able to write to the pipe. Eventually, the writing process will fill the pipe, and a further attempt to write will block indefinitely.
 One final reason for closing unused file descriptors is that it is only after all file descriptors in all processes that refer to a pipe are closed that the pipe is destroyed and its resources released for reuse by other processes. At this point, any unread data in the pipe is lost.
 
+## FIFOs
+Semantically a FIFO is similar to a pipe. The principal difference is that a FIFO has a name within the file system and is opened in the same way as a regular file. This allows a FIFO to be used for communication between unrelated processes.

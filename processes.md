@@ -46,3 +46,16 @@ The kernel stack is a per-process memory region maintained in kernel memory that
 Stack frame contains the following informations:
 - *Function arguments and local variables*: In C those are called automatic variables.
 - *Call linkage information*: Each function used certain CPU registers, such as the program counter, which points to the next machine-language instruction to be executed. Each time a function calls another, a copy of the values of these registers are saved in the called function's stack, so that when it returns the register values can be restored for the calling function.
+
+## Context Switching
+The kernel is responsible for the context switching between processes. To understand how it works, let's assume a process is running in the user mode and it's time slice is up. Then:
+1. The CPU (the actual hardware) interrupts the current process based on an internal timer, switches into kernel mode, and hands control back to the kernel.
+2. The kernel records the current state of the CPU and memotry, which will be essential to resume the process that was just interrupted.
+3. The kernel performs any task that might have come up during the preceding time slick (such as collecting data from input and output, I/O operations).
+4. The kernel is now ready to ler another process run. The kernel analyzes the list of peocess and ready to choose and run one.
+5. The kernel prepares the memory for the new process and then prepare the CPU.
+6. The kernel tells the CPU how long the time slice for the new process will last.
+7. The kernel switches the CPU into user mode and hands control of the CPU to the process.
+
+
+
