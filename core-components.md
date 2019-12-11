@@ -77,7 +77,14 @@ These permissions may also be set on directories, although their meanings are sl
 ## File I/O Model
 Same system callls (*open(), read(), write(), close() and so on*) are used to perform I/O on all types of files, including devices.
 The kernel essentially provides one file type: a sequential stream of bytes, which in the case of disk files, disks, and tape devices can be randomly accessed and using the *lseek()* system call.
-UNIX systems have no *end-of-file* character; the end of file is detected by a read that returns no data.
+UNIX systems have no *end-of-file* character; the end of file is detected by a read that returns no data. If `ls -l` is run on a directory, something like
+`-rw-r--r-- 1 user group 1234 Mar 26 19:34 file.extencion` will be shown. Here, First dash of `-rw-r--r--` is the file type (here a dash means it's a regular file, in case of directories, it will be `d`). Next 3 characters are `user permission`, next 3 characters are `group permission` and last 3 characters are `other permissions`. Each permission can be either,
+- `r` Means the file is readable
+- `w` Means the file is writable
+- `x` Means the file is executable
+- `-` Means nothing
+
+Some executable files have an `s` in the user permissions listing instead of an `x`. This indicates that the executable is `setuid`, meaning that when you execute the program, it runs as though **the file owner is the user instead of you**. Many programs use this setuid bit to run as root in order to get the privileges they need to change system files. One example is the passwd program, which needs to change the `/etc/passwd` file.
 
 ### File Descriptors
 The I/O system calls refer to open files using a *file descriptor* a non negative integer. Normally a process inherits three open file descriptors when started by shell.
