@@ -71,20 +71,42 @@ Each process has a current working directory. Inherited from it's parent process
 
 ### File ownership and permissions
 Each file has an associated user ID and group ID that define the owner of the file and the group to which it belongs. 
-For the purpose of accessing a file, the system divides users into three catego- ries: the owner of the file (sometimes termed the user of the file), users who are members of the group matching the file’s group ID ( group), and the rest of the world (other). Three permission bits may be set for each of these categories of user (making a total of nine permission bits): read permission allows the contents of the file to be read; write permission allows modification of the contents of the file; and execute permission allows execution of the file, which is either a program or a script to be processed by some interpreter (usually, but not always, one of the shells).
-These permissions may also be set on directories, although their meanings are slightly different: read permission allows the contents of (i.e., the filenames in) the directory to be listed; write permission allows the contents of the directory to be changed (i.e., filenames can be added, removed, and changed); **and execute (some- times called search)** permission allows access to files within the directory (subject to the permissions on the files themselves).
-
-## File I/O Model
-Same system callls (*open(), read(), write(), close() and so on*) are used to perform I/O on all types of files, including devices.
-The kernel essentially provides one file type: a sequential stream of bytes, which in the case of disk files, disks, and tape devices can be randomly accessed and using the *lseek()* system call.
-UNIX systems have no *end-of-file* character; the end of file is detected by a read that returns no data. If `ls -l` is run on a directory, something like
-`-rw-r--r-- 1 user group 1234 Mar 26 19:34 file.extencion` will be shown. Here, First dash of `-rw-r--r--` is the file type (here a dash means it's a regular file, in case of directories, it will be `d`). Next 3 characters are `user permission`, next 3 characters are `group permission` and last 3 characters are `other permissions`. Each permission can be either,
+For the purpose of accessing a file, the system divides users into three categories: the owner of the file (sometimes termed the user of the file), users who are members of the group matching the file’s group ID (group), and the rest of the world (other). Three permission bits may be set for each of these categories of user (making a total of nine permission bits): read permission allows the contents of the file to be read; write permission allows modification of the contents of the file; and execute permission allows execution of the file, which is either a program or a script to be processed by some interpreter (usually, but not always, one of the shells).
+These permissions may also be set on directories, although their meanings are slightly different: read permission allows the contents of (i.e., the filenames in) the directory to be listed; write permission allows the contents of the directory to be changed (i.e., filenames can be added, removed, and changed); **and execute (sometimes called search)** permission allows access to files within the directory (subject to the permissions on the files themselves).
+If `ls -l` is run on a directory, something like
+`-rw-r--r-- 1 user group 1234 Mar 26 19:34 file.extencion` will be shown. Here, First dash of `-rw-r--r--` is the file type (here a dash means it's a regular file, in case of directories, it will be `d`, in case if symbilic link it will be `l`). Next 3 characters are `user permission`, next 3 characters are `group permission` and last 3 characters are `other permissions`. Each permission can be either,
 - `r` Means the file is readable
 - `w` Means the file is writable
 - `x` Means the file is executable
 - `-` Means nothing
 
 Some executable files have an `s` in the user permissions listing instead of an `x`. This indicates that the executable is `setuid`, meaning that when you execute the program, it runs as though **the file owner is the user instead of you**. Many programs use this setuid bit to run as root in order to get the privileges they need to change system files. One example is the passwd program, which needs to change the `/etc/passwd` file.
+
+| Mode | Meaning | Used For |
+| :--- | :--- | :--- |
+| 644 | user: (read/write); group+other: read | files |
+| 600 | user: (read/write); group+other: none | files |
+| 755 | user: (read/write/execute); group+other: (read/execute) | directories, programs |
+| 700 | user: (read/write/execute); group+other: none | directories, programs |
+| 711 | user: (read/write/execute); group+other: execute | directories |
+
+### Some important file hierarchies
+- `/bin` containg ready-to-run files AKA executables. Mostly bin files.
+- `/dev` contains device files.
+- `/etc` The core system configuration directory contains user password, boot, devices, networking and other setup files.
+- `/home` Holds personal directories for regular user.
+- `/lib` An abbreviation for library. Contains files that executables can use. There are two types of libraries, `static` and `shared`. Lib directory should contain only **shared libraries**.
+- `/proc` Contains information abour currently running directories as well as some kernel parameters.
+- `/sys` Similar to `/proc` in that it provides a device and system inteface.
+- `/sbin` The place for system executables.
+- `/tmp` meh
+- `/usr` Although pronounced “user,” this subdirectory has **no user files**. Instead, it contains a large directory hierarchy, including the bulk of the Linux system. Many of the directory names in /usr are the same as those in the root directory (like /usr/bin and /usr/lib), and they hold the same type of files. (The reason that the root directory does not contain the complete system is primarily historic—in the past, it was to keep space requirements low for the root.)
+- `/var` Where program records runtime information. **System logging**, user tracking, caches and other files system program creates and manages are here.
+
+## File I/O Model
+Same system callls (*open(), read(), write(), close() and so on*) are used to perform I/O on all types of files, including devices.
+The kernel essentially provides one file type: a sequential stream of bytes, which in the case of disk files, disks, and tape devices can be randomly accessed and using the *lseek()* system call.
+UNIX systems have no *end-of-file* character; the end of file is detected by a read that returns no data.
 
 ### File Descriptors
 The I/O system calls refer to open files using a *file descriptor* a non negative integer. Normally a process inherits three open file descriptors when started by shell.
