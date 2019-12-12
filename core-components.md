@@ -211,3 +211,4 @@ When a process receives a signal, it takes one of the following actions,
 In the interval between the time it is generated and the time it is delivered, a signal is said to be *pending* for a process. Normally, a pending signal is delivered as soon as the receiving process is next scheduled to run, or immediately if the pro- cess is already running. However, it is also possible to *block* a signal by adding it to the process’s signal *mask*. If a signal is generated while it is blocked, it remains pending until it is later unblocked 
 
 ## Threads
+Threads are native os schemes
