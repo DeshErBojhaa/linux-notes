@@ -1,6 +1,6 @@
 ## Process and Programs
 A process is an instance of an executing program. 
-A program is a file containing a rnage of information that describs how to construct a process at runtime. This information includes the following:
+A program is a file containing a range of information that describs how to construct a process at runtime. This information includes the following:
 - *Binary format identification*: Each program file includes metainformation describing the format of the executable file. In modern Linux it is *Executable and Linking Format* (ELF)
 - *Machine Language instructions*: This encodes the algorithm of the program
 - *Program entry-point address*: This identifies the location of the instruction at which execution of the program should commence.
@@ -8,6 +8,8 @@ A program is a file containing a rnage of information that describs how to const
 - *Symble and relocation tables*: Describes the names and locations of functions and variables.
 - *Standard-library and dynamic-linking information*: 3rd party libraries and dynamic links to locate those libraries.
 - Other informations
+
+To manage the process in system, Linux represents each process with a `task_struct` in Linux the term task and process are oftern used interchangably. The `task vector` is an array of pointers that holds ref of all tasks in a system. The size of `task vector` is by default 512, thus the max number of process in a system is 512.
 
 ## Process and Process ID
 With the exceptionof a few system processes such as  `init` process has id 1, other process ids are not fixed. Linux kernel limit process id is <= 32767.
