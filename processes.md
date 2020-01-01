@@ -49,6 +49,7 @@ Linux uses *virtual memory management*. Most process has vertual memory, except 
 The advantage of locality of reference is that, it is possible to run a program while maintaining a part of it's address in RAM.
 
 ![process-vm](https://user-images.githubusercontent.com/46394832/71638962-bebd9200-2c97-11ea-8670-0f2cbcb5d3cb.gif)
+virtual memory
 
 
 | Kernel(mapped into process virtual memory, but not accessible to program) |
