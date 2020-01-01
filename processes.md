@@ -39,11 +39,17 @@ The momory (virtual memory) allocated to a process is composed of a number of pa
 - **Stack**: Dynamically growing and shrinking segment conraining stack frames. One stack frame is allocated for each currently called function. A frame holds a functions local variables, arguments and return value.
 - **Heap**: It is an area from which memory for variables can be dynamically allocated at run time. The top end of a heap is called *program break*.
 
+## Files
+![files](https://user-images.githubusercontent.com/46394832/71638947-700ff800-2c97-11ea-919e-25d1b0fec8ae.gif)
+
 ## Virtual Memory Management
 Linux uses *virtual memory management*. Most process has vertual memory, except kernel thread and deamon process. The aim of this technique is to use efficient use of both ram and CPU by exploiting a property that is typical of most programs: *locality of reference*. Most program demostrate 2 type of locality.
 1. *Spatial locality*: is the tendency of a program to reference memory addresses that are near those that were recently accessed. Because of sequential processing of instructions and sometimes sequential processing of data structure.
 2. *Temporal locality*: is the tendency of a program to access the same memory address in the near future that is accessed in the recent past (because of loops).
 The advantage of locality of reference is that, it is possible to run a program while maintaining a part of it's address in RAM.
+
+![process-vm](https://user-images.githubusercontent.com/46394832/71638962-bebd9200-2c97-11ea-8670-0f2cbcb5d3cb.gif)
+
 
 | Kernel(mapped into process virtual memory, but not accessible to program) |
 -----
