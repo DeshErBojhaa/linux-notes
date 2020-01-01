@@ -9,7 +9,23 @@ A program is a file containing a range of information that describs how to const
 - *Standard-library and dynamic-linking information*: 3rd party libraries and dynamic links to locate those libraries.
 - Other informations
 
-To manage the process in system, Linux represents each process with a `task_struct` in Linux the term task and process are oftern used interchangably. The `task vector` is an array of pointers that holds ref of all tasks in a system. The size of `task vector` is by default 512, thus the max number of process in a system is 512.
+### Task struct and task vector
+To manage the process in system, Linux represents each process with a `task_struct` in **Linux the term task and process are oftern used interchangably**. The `task vector` is an array of pointers that holds ref of all tasks in a system. The size of `task vector` is by default 512, thus the max number of process in a system is 512. The task struct is a large and complex data structure. It's main components are,
+- State
+  - Running: either currently running or it is waitng to be assigned to one of a systems CPU.
+  - Waiting: The process is waiting for an event or resource
+    - Interreptable : waiting on signal or interrupts
+    - Uninterruptable: waiting on hardware
+  - Stopped
+  - **Zombie**: It is a halted process, which, for some reason still has a refrence in the `task_list` vector. It is a dead process.
+- Scheduling information
+- Identifiers: PID and GID of a process
+- Inter process communication: signals, pipes and semaphores from the classic Unix™. Shared memory, FIFO and ans semaphores from system V.
+- Links: Reference to parent process and all the child processes in `task_vector`.
+- Timers and time
+- File system  
+- Virtual memory: (Kernel thread and deamon process do not have virtual memory).
+- Process specific context.
 
 ## Process and Process ID
 With the exceptionof a few system processes such as  `init` process has id 1, other process ids are not fixed. Linux kernel limit process id is <= 32767.
@@ -24,7 +40,7 @@ The momory (virtual memory) allocated to a process is composed of a number of pa
 - **Heap**: It is an area from which memory for variables can be dynamically allocated at run time. The top end of a heap is called *program break*.
 
 ## Virtual Memory Management
-Linux uses *virtual memory management*. The aim of this technique is to use efficient use of both ram and CPU by exploiting a property that is typical of most programs: *locality of reference*. Most program demostrate 2 type of locality.
+Linux uses *virtual memory management*. Most process has vertual memory, except kernel thread and deamon process. The aim of this technique is to use efficient use of both ram and CPU by exploiting a property that is typical of most programs: *locality of reference*. Most program demostrate 2 type of locality.
 1. *Spatial locality*: is the tendency of a program to reference memory addresses that are near those that were recently accessed. Because of sequential processing of instructions and sometimes sequential processing of data structure.
 2. *Temporal locality*: is the tendency of a program to access the same memory address in the near future that is accessed in the recent past (because of loops).
 The advantage of locality of reference is that, it is possible to run a program while maintaining a part of it's address in RAM.
@@ -50,9 +66,10 @@ Stack frame contains the following informations:
 - *Call linkage information*: Each function used certain CPU registers, such as the program counter, which points to the next machine-language instruction to be executed. Each time a function calls another, a copy of the values of these registers are saved in the called function's stack, so that when it returns the register values can be restored for the calling function.
 
 ## Context Switching
-The kernel is responsible for the context switching between processes. To understand how it works, let's assume a process is running in the user mode and it's time slice is up. Then:
+The kernel is responsible for the context switching between processes. Whenever a process is running it is using the processor's registers, stacks and so on. This is the processes context and, when a process is suspended, all of that CPU specific context must be saved in the `task_struct` for the process. When a process is restarted by the scheduler its context is restored from here. 
+To understand how it works, let's assume a process is running in the user mode and it's time slice is up. Then:
 1. The CPU (the actual hardware) interrupts the current process based on an internal timer, switches into kernel mode, and hands control back to the kernel.
-2. The kernel records the current state of the CPU and memotry, which will be essential to resume the process that was just interrupted.
+2. The kernel records the current state of the CPU and memotry in `task_struct`, which will be essential to resume the process that was just interrupted.
 3. The kernel performs any task that might have come up during the preceding time slick (such as collecting data from input and output, I/O operations).
 4. The kernel is now ready to ler another process run. The kernel analyzes the list of peocess and ready to choose and run one.
 5. The kernel prepares the memory for the new process and then prepare the CPU.
