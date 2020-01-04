@@ -5,6 +5,8 @@ For pipes and FIFOs, boundaries between multiple message are not preserved. This
 - Include a fixed sized header with a length field.
 - Use fixed length meaasges.
 
+![pipes](https://user-images.githubusercontent.com/46394832/71670393-e09f3d80-2d99-11ea-9c43-910538ea6e1d.gif)
+
 ### A pipe is a stream of byte
 There is no concept of message or message boundaries when using a pipe. The  process reading from a pipe can read blocks of data of any size, regardless of the size of the block. Data in pipes are synchronized. It's **not possible** to randomly access the data in pipe using `lseek()`.
 
